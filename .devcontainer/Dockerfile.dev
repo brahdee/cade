@@ -1,0 +1,56 @@
+FROM python:3.12-slim-bookworm AS python-deps
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir \
+    "Pillow==11.1.0" \
+    "opencv-python-headless==4.11.0.86" \
+    "yt-dlp==2026.10.26" \
+    "pilmoji @ git+https://github.com/jay3332/pilmoji.git"
+
+RUN git clone --depth 1 \
+    https://github.com/brahdee/pycaption.git \
+    /opt/pycaption
+    
+FROM node:26-bookworm-slim
+
+WORKDIR /app
+
+COPY --from=python-deps /usr/local /usr/local
+COPY --from=python-deps /opt/pycaption /opt/pycaption
+
+ENV PYTHONUNBUFFERED=1
+ENV PYCAPTION_DIR=/opt/pycaption
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+        git \
+        ca-certificates \
+        ffmpeg \
+        imagemagick \
+    && git config --system --add safe.directory /app \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=ghcr.io/pnpm/pnpm:12.21.0 /opt/pnpm /opt/pnpm
+
+RUN for bin in pnpm pn pnpx pnx; do \
+    ln -s "/opt/pnpm/$bin" "/usr/local/bin/$bin"; \
+    done
+
+ENV CADE_WEB_MAX_FILE_SIZE_MB=250
+
+RUN pnpm config set store-dir /app/node_modules/.pnpm-store
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+RUN pnpm install --frozen-lockfile
+
+RUN python3 --version \
+    && python3 -c "import PIL, cv2, numpy; from pilmoji import Pilmoji" \
+    && yt-dlp --version \
+    && ffmpeg -version
+
+CMD ["sleep", "infinity"]

@@ -1,0 +1,66 @@
+FROM node:26-bookworm-slim AS pnpm-base
+
+COPY --from=ghcr.io/pnpm/pnpm:12.21.0 /opt/pnpm /opt/pnpm
+
+RUN for bin in pnpm pn pnpx pnx; do \
+    ln -s "/opt/pnpm/$bin" "/usr/local/bin/$bin"; \
+    done
+
+WORKDIR /app
+
+# build sveltekit
+FROM pnpm-base AS build
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+
+RUN pnpm build:web
+
+# install dependencies
+FROM pnpm-base AS production-deps
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+RUN pnpm install --prod --frozen-lockfile
+
+# production runtime
+FROM node:26-bookworm-slim AS production
+
+ENV NODE_ENV=production \
+    HOST=0.0.0.0 \
+    PORT=3000 \
+    CADE_WEB_MAX_FILE_SIZE_MB=250 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        ffmpeg \
+        python3 \
+        python3-venv \
+    && python3 -m venv /opt/yt-dlp \
+    && /opt/yt-dlp/bin/pip install --no-cache-dir \
+        "yt-dlp==2026.10.26" \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PATH="/opt/yt-dlp/bin:${PATH}"
+
+COPY --from=production-deps --chown=node:node /app/node_modules ./node_modules
+
+COPY --from=build --chown=node:node /app/build ./build
+COPY --from=build --chown=node:node /app/package.json ./package.json
+
+RUN python3 --version \
+    && yt-dlp --version \
+    && ffmpeg -version >/dev/null \
+    && ffprobe -version >/dev/null \
+    && node --version
+
+USER node
+
+CMD ["node", "build"]

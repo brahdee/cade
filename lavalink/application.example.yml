@@ -1,0 +1,51 @@
+server:
+  address: 0.0.0.0
+  port: 2333
+
+lavalink:
+  server:
+    password: "lavalink-password"
+
+    sources:
+      youtube: false
+      bandcamp: true
+      soundcloud: true
+      twitch: true
+      vimeo: true
+      nico: true
+      http: true
+      local: false
+
+  plugins:
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.2"
+      snapshot: false
+    - dependency: "com.github.topi314.lavalyrics:lavalyrics-plugin:1.1.0"
+
+logging:
+  level:
+    root: INFO
+    lavalink: INFO
+
+plugins:
+  youtube:
+    enabled: true
+    allowSearch: true
+    allowDirectVideoIds: true
+    allowDirectPlaylistIds: true
+    clients:
+      - MUSIC
+      - ANDROID_VR
+      - WEB
+      - WEBEMBEDDED
+      - TV
+    # pot:
+    #  token: "PO TOKEN"
+    # oauth:
+    #  enabled: true
+    #  refreshToken: "REFRESH TOKEN"
+  lavalyrics:
+    sources:
+      - spotify
+      - youtube
+      - deezer
+      - yandexMusic

@@ -1,3 +1,8 @@
 {
-    "editor.defaultFormatter": "ms-python.black-formatter"
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.wordWrap": "off",
+  "editor.folding": true,
+  "editor.foldingStrategy": "auto",
+  "editor.showFoldingControls": "always"
 }

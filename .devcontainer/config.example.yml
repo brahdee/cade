@@ -1,0 +1,15 @@
+discord:
+  token: "dev bot token"
+  prefix: "."
+
+database:
+  host: "postgres"
+  port: 5432
+  user: "cade"
+  password: "cade-dev-only-password"
+  name: "cade"
+
+lavalink:
+  host: "lavalink"
+  port: 2333
+  password: "cade-dev-lavalink-password"

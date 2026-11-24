@@ -1,0 +1,36 @@
+{
+  "name": "cade dev",
+  "dockerComposeFile": "compose.dev.yaml",
+  "service": "bot",
+  "workspaceFolder": "/app",
+
+  "runServices": ["bot", "postgres", "lavalink"],
+
+  "shutdownAction": "stopCompose",
+  "overrideCommand": false,
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker",
+        "TypeScriptTeam.native-preview"
+      ],
+      "settings": {
+        "js/ts.experimental.useTsgo": true,
+        "js/ts.tsdk.path": "./node_modules/typescript",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+      }
+    }
+  },
+
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "dockerDashComposeVersion": "latest"
+    }
+  },
+
+  "forwardPorts": [5173, 3000]
+}

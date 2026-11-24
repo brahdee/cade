@@ -1,0 +1,46 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Development Environment",
+      "dependsOn": ["cade & web logs", "lavalink logs"],
+      "dependsOrder": "parallel",
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "cade & web logs",
+      "type": "shell",
+      "command": "pnpm dev",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "cade-dev",
+        "focus": true,
+        "clear": true
+      }
+    },
+    {
+      "label": "lavalink logs",
+      "type": "shell",
+      "command": "docker compose -p cade_devcontainer -f .devcontainer/compose.dev.yaml logs --follow --tail=100 lavalink",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "group": "cade-dev",
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    }
+  ]
+}

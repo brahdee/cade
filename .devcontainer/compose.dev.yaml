@@ -1,0 +1,58 @@
+services:
+  bot:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.dev
+
+    init: true
+
+    command: sleep infinity
+
+    environment:
+      NODE_ENV: development
+      CADE_CONFIG: .devcontainer/config.dev.yml
+
+    volumes:
+      - ..:/app
+      - cade_node_modules:/app/node_modules
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      lavalink:
+        condition: service_started
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: cade
+      POSTGRES_PASSWORD: cade-dev-only-password
+      POSTGRES_DB: cade
+
+    ports:
+      - "127.0.0.1:5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cade -d cade"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  lavalink:
+    image: ghcr.io/lavalink-devs/lavalink:4
+    restart: unless-stopped
+
+    volumes:
+      - ./lavalink/application.yml:/opt/Lavalink/application.yml:ro
+
+    expose:
+      - "2333"
+
+volumes:
+  postgres_data:
+  cade_node_modules:

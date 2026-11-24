@@ -1,0 +1,15 @@
+discord:
+  token: "TOKEN"
+  prefix: "."
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "cade"
+  password: "database-password"
+  name: "cade"
+
+lavalink:
+  host: "localhost"
+  port: 2333
+  password: "lavalink-password"

@@ -1,0 +1,76 @@
+name: cade-prod
+
+services:
+  bot:
+    container_name: cade
+
+    image: ${CADE_BOT_IMAGE}:${IMAGE_TAG:-latest}
+
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: production
+      CADE_CONFIG: /app/config.yml
+
+    volumes:
+      - ./config.yml:/app/config.yml:ro
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      lavalink:
+        condition: service_started
+
+  web:
+    container_name: cade-web
+
+    image: ${CADE_WEB_IMAGE}:${IMAGE_TAG:-latest}
+
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      CADE_WEB_MAX_FILE_SIZE_MB: 250
+
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  postgres:
+    container_name: cade-postgres
+    image: postgres:17-alpine
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cade}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-cade}
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  lavalink:
+    container_name: cade-lavalink
+    image: ghcr.io/lavalink-devs/lavalink:4
+
+    restart: unless-stopped
+
+    volumes:
+      - ./lavalink/application.yml:/opt/Lavalink/application.yml:ro
+
+    expose:
+      - "2333"
+
+volumes:
+  postgres_data:
+    name: cade_prod_postgres_data

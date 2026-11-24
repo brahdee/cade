@@ -1,6 +1,25 @@
-# exclude folders for other services
-lavalink
-mongo
+node_modules
+**/node_modules
 
-.venv
+.git
+**/.git
+
+.devcontainer
 .vscode
+.svelte-kit
+
+build
+dist
+coverage
+
+/**/config*yml
+!/**/config.example.yml
+
+/**/application*yml
+!/**/application.example.yml
+
+.env
+.env.*
+
+.DS_Store
+**/.DS_Store

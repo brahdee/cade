@@ -1,0 +1,19 @@
+{
+  "extends": "$app/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+
+    "allowJs": true,
+    "checkJs": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src", "test", "*"],
+  "exclude": ["src/service-worker", "node_modules", "dist"]
+}

@@ -1,29 +1,13 @@
-# cache
-__pycache__/
-*.py[cod]
-*$py.class
+node_modules
+build
 
-# environments
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+.env.*
 
-# folders used in docker containers
-mongo/*
-lavalink/plugins
-largefiles/*
-!largefiles/nick.png
-!largefiles/index.html
+/**/config*yml
+!/**/config.example.yml
 
-# config files
-config.ini
-lavalink.yml
-.cdn-script.env
-db_password.txt
+/**/application*yml
+!/**/application.example.yml
 
-#other
-.DS_STORE
+.DS_Store
