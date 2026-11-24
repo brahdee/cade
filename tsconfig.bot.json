@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "src/routes/**",
+    "src/hooks.client.ts",
+    "src/service-worker.ts",
+    "test/**",
+    "node_modules",
+    "dist"
+  ]
+}

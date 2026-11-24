@@ -30,7 +30,7 @@
     "vite": "^8.3.8"
   },
   "scripts": {
-    "build": "svelte-kit sync && tsc",
+    "build": "svelte-kit sync && tsc -p tsconfig.bot.json",
     "start": "node dist/index.js",
     "typecheck": "svelte-kit sync && tsc --noEmit",
     "db:generate": "drizzle-kit generate",
