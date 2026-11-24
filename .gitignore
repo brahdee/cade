@@ -3,6 +3,7 @@ build
 
 .env
 .env.*
+!.env.example
 
 /**/config*yml
 !/**/config.example.yml
