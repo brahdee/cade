@@ -4,5 +4,6 @@
   "editor.wordWrap": "off",
   "editor.folding": true,
   "editor.foldingStrategy": "auto",
-  "editor.showFoldingControls": "always"
+  "editor.showFoldingControls": "always",
+  "conventionalCommits.scopes": ["bot"]
 }
