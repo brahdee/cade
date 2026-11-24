@@ -103,7 +103,10 @@ export class InfoCommand extends CadeCommand {
 
     const uptime = formatUptime(Date.now() - client.startedAt);
 
-    const userCount = client.users.cache.filter((user) => !user.bot).size;
+    const userCount = client.guilds.cache.reduce(
+      (total, guild) => total + guild.memberCount,
+      0,
+    );
 
     const guildCount = client.guilds.cache.size;
 
