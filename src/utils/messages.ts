@@ -12,12 +12,12 @@ function withPrefix<const T extends NestedMessages>(
   entries: T,
   prefix: string,
 ): {
-  [K in keyof T]: T[K] extends string
+    [K in keyof T]: T[K] extends string
     ? string
     : T[K] extends NestedMessages
-      ? ReturnType<typeof withPrefix<T[K]>>
-      : never;
-} {
+    ? ReturnType<typeof withPrefix<T[K]>>
+    : never;
+  } {
   return Object.fromEntries(
     Object.entries(entries).map(([key, value]) => [
       key,
@@ -198,11 +198,11 @@ export const messages = {
 
   media: {
     get: {
-      chooseFormat: "whatcha wanna download",
+      chooseFormat: `${PROCESSING_EMOJI} whatcha wanna download`,
 
-      onlyInvoker: "only the person who used .get can use these buttons",
+      onlyInvoker: `${ERROR_EMOJI} only the person who used .get can use these buttons`,
 
-      downloading: (format: "video" | "audio") => `downloading ${format}...`,
+      downloading: (format: "video" | "audio") => `${PROCESSING_EMOJI} downloading ${format}...`,
     },
   },
 } as const;

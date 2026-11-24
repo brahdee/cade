@@ -105,15 +105,13 @@ export class GetCommand extends CadeCommand {
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId(`cade:get:${requestId}:video`)
-        .setLabel("Video")
-        .setStyle(ButtonStyle.Primary)
-        .setEmoji("🎬"),
+        .setLabel("video (mp4)")
+        .setStyle(ButtonStyle.Primary),
 
       new ButtonBuilder()
         .setCustomId(`cade:get:${requestId}:audio`)
-        .setLabel("Audio")
-        .setStyle(ButtonStyle.Secondary)
-        .setEmoji("🎵"),
+        .setLabel("audio (mp3)")
+        .setStyle(ButtonStyle.Secondary),
     );
 
     try {
