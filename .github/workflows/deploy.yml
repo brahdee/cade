@@ -114,5 +114,7 @@ jobs:
             "$SERVER_USER@$SERVER_HOST" \
             "cd /opt/cade &&
              IMAGE_TAG='${GITHUB_SHA}' docker compose pull bot web &&
-             IMAGE_TAG='${GITHUB_SHA}' docker compose up -d --remove-orphans &&
+             docker compose up -d --wait postgres &&
+             IMAGE_TAG='${GITHUB_SHA}' docker compose run --rm --no-deps bot node dist/database/migrate.js &&
+             IMAGE_TAG='${GITHUB_SHA}' docker compose up -d --no-build --remove-orphans &&
              docker image prune -f"
