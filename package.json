@@ -30,9 +30,9 @@
     "vite": "^8.3.8"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "svelte-kit sync && tsc",
     "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "svelte-kit sync && tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/database/migrate.ts",
     "db:push": "drizzle-kit push",
@@ -41,9 +41,9 @@
     "dev:bot": "tsx watch src/index.ts",
     "dev:web": "vite dev",
     "dev": "concurrently --kill-others --names bot,web --prefix-colors blue,green \"pnpm dev:bot\" \"pnpm dev:web\"",
-    "build:web": "vite build",
+    "build:web": "svelte-kit sync && vite build",
     "start:web": "node --env-file=.env build",
-    "check:web": "svelte-check --tsconfig ./tsconfig.json"
+    "check:web": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
     "discord.js": "^14.28.1",
