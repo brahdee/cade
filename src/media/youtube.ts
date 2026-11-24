@@ -1,7 +1,8 @@
+
 import { spawn } from "node:child_process";
 import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, extname, join, resolve } from "node:path";
+import { basename, dirname, extname, join, resolve } from "node:path";
 
 export type YouTubeDownloadFormat = "video" | "audio";
 
@@ -154,7 +155,7 @@ export async function downloadYouTube(
   const directory = await mkdtemp(join(tmpdir(), "cade-youtube-"));
 
   try {
-    const outputTemplate = join(directory, "%(id)s.%(ext)s");
+    const outputTemplate = join(directory, "%(title)s.%(ext)s");
 
     const args = [
       "--ignore-config",
@@ -166,6 +167,8 @@ export async function downloadYouTube(
       `${Math.max(1, Math.floor(maxFileSize / (1024 * 1024)))}M`,
       "--output",
       outputTemplate,
+      "--trim-filenames",
+      "180",
     ];
 
     if (format === "video") {
@@ -239,7 +242,7 @@ export async function downloadYouTube(
 
     return {
       buffer: await readFile(finalPath),
-      filename: `cade.${format === "video" ? "mp4" : "mp3"}`,
+      filename: basename(finalPath),
       format,
     };
   } finally {
