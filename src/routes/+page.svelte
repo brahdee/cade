@@ -1,7 +1,7 @@
 <script lang="ts">
     let url = $state("");
     let loading = $state(false);
-    let status = $state("");
+    let status = $state("hi");
 
     async function download(event: SubmitEvent): Promise<void> {
         event.preventDefault();
@@ -28,7 +28,7 @@
                     await response.json().catch(() => null);
 
                 throw new Error(
-                    result?.error ?? "download failed!"
+                    "download failed!"
                 );
             }
 
@@ -62,17 +62,25 @@
     <title>cade yt downloader</title>
 </svelte:head>
 
-<form onsubmit={download}>
-    <input
-        type="url"
-        placeholder="youtube url goes here"
-        bind:value={url}
-        required
-    />
+<div id="container">
+    <p>cade youtube download</p>
+    <form onsubmit={download}>
+        <input
+            type="url"
+            placeholder="youtube url goes here"
+            bind:value={url}
+            required
+        />
 
-    <button type="submit" disabled={loading}>
-        {loading ? "downloading..." : "download audio"}
-    </button>
-</form>
+        <button type="submit" disabled={loading}>
+            {loading ? "downloading..." : "download audio (mp3)"}
+        </button>
+    </form>
 
-<p aria-live="polite">{status}</p>
+    <div id="cade">
+        <img src="https://i.imgur.com/y5mZhbK.png" alt="cade">
+        <hgroup>
+            <p aria-live="polite" class="speech-bubble">{status}</p>
+        </hgroup>
+    </div>
+</div>
