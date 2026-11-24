@@ -5,5 +5,5 @@
   "editor.folding": true,
   "editor.foldingStrategy": "auto",
   "editor.showFoldingControls": "always",
-  "conventionalCommits.scopes": ["bot"]
+  "conventionalCommits.scopes": ["bot", "web"]
 }
