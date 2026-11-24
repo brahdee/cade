@@ -91,7 +91,7 @@ export class InfoCommand extends CadeCommand {
       return;
     }
 
-    const [totalInvocations, statsStartedAt, gitInfo] = await Promise.all([
+    const [totalInvocations, _, gitInfo] = await Promise.all([
       getTotalCommandCount(),
       getStatsStartedAt(),
       getGitInfo(),

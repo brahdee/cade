@@ -47,9 +47,18 @@ RUN pnpm install --prod --frozen-lockfile
 # production runtime
 FROM node:26-bookworm-slim AS production
 
+ARG GIT_COMMIT
+ARG GIT_COMMIT_COUNT
+ARG GIT_TIMESTAMP
+ARG GIT_MESSAGE
+
 ENV NODE_ENV=production \
     PYTHONUNBUFFERED=1 \
-    PYCAPTION_DIR=/opt/pycaption
+    PYCAPTION_DIR=/opt/pycaption \
+    CADE_GIT_COMMIT=${GIT_COMMIT} \
+    CADE_GIT_COMMIT_COUNT=${GIT_COMMIT_COUNT} \
+    CADE_GIT_TIMESTAMP=${GIT_TIMESTAMP} \
+    CADE_GIT_MESSAGE=${GIT_MESSAGE}
 
 WORKDIR /app
 

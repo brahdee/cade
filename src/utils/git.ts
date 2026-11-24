@@ -2,8 +2,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
-
-const REPOSITORY_URL = "https://github.com/brahdee/cade";
+export const REPOSITORY_URL = "https://github.com/brahdee/cade";
 
 export interface GitInfo {
   commitCount: number;
@@ -12,16 +11,51 @@ export interface GitInfo {
   message: string;
 }
 
-export async function getGitInfo(): Promise<GitInfo | null> {
+function getBuildGitInfo(): GitInfo | null {
+  const hash = process.env.CADE_GIT_COMMIT;
+  const commitCountValue = process.env.CADE_GIT_COMMIT_COUNT;
+  const timestampValue = process.env.CADE_GIT_TIMESTAMP;
+  const message = process.env.CADE_GIT_MESSAGE;
+
+  if (
+    !hash ||
+    commitCountValue === undefined ||
+    timestampValue === undefined ||
+    message === undefined
+  ) {
+    return null;
+  }
+
+  const commitCount = Number(commitCountValue);
+  const timestamp = Number(timestampValue);
+
+  if (
+    !Number.isSafeInteger(commitCount) ||
+    commitCount < 1 ||
+    !Number.isSafeInteger(timestamp) ||
+    timestamp < 1
+  ) {
+    return null;
+  }
+
+  return {
+    commitCount,
+    hash,
+    timestamp,
+    message
+  };
+}
+
+async function getLocalGitInfo(): Promise<GitInfo | null> {
   try {
     const [countResult, logResult] = await Promise.all([
       execFileAsync("git", ["rev-list", "--count", "HEAD"], {
-        cwd: process.cwd(),
+        cwd: process.cwd()
       }),
 
       execFileAsync("git", ["log", "-1", "--pretty=format:%h%n%at%n%s"], {
-        cwd: process.cwd(),
-      }),
+        cwd: process.cwd()
+      })
     ]);
 
     const commitCount = Number(countResult.stdout.trim());
@@ -44,7 +78,7 @@ export async function getGitInfo(): Promise<GitInfo | null> {
       commitCount,
       hash,
       timestamp,
-      message: messageParts.join("\n"),
+      message: messageParts.join("\n")
     };
   } catch (error) {
     console.warn("[Git] Could not retrieve commit information:", error);
@@ -52,4 +86,6 @@ export async function getGitInfo(): Promise<GitInfo | null> {
   }
 }
 
-export { REPOSITORY_URL };
+export async function getGitInfo(): Promise<GitInfo | null> {
+  return getBuildGitInfo() ?? await getLocalGitInfo();
+}
