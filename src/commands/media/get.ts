@@ -106,7 +106,7 @@ export class GetCommand extends CadeCommand {
       new ButtonBuilder()
         .setCustomId(`cade:get:${requestId}:video`)
         .setLabel("video (mp4)")
-        .setStyle(ButtonStyle.Primary),
+        .setStyle(ButtonStyle.Secondary),
 
       new ButtonBuilder()
         .setCustomId(`cade:get:${requestId}:audio`)
