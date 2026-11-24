@@ -1,8 +1,13 @@
 import type { CadeCommand } from "../commands/types";
 
-const ERROR_EMOJI = "<a:fire:1004208282585530408>";
-const SUCCESS_EMOJI = "<:cadeok:934934539124502598>";
-const PROCESSING_EMOJI = "<a:cadeload:934934660495048716>";
+export enum CadeEmoji {
+  ERROR = "<a:fire:1004208282585530408>",
+  SUCCESS = "<:cadeok:934934539124502598>",
+  PROCESSING = "<a:cadeload:934934660495048716>",
+  HAPPY = "<:cadehappy:1245899329038712943>",
+  ANGRY = "<:cademad:1245901173232242698>",
+  MOLDY = "<:cademoldy:1388257976917295215>",
+}
 
 type NestedMessages = {
   [key: string]: string | NestedMessages;
@@ -142,7 +147,7 @@ export const messages = {
         trackNotInQueue: "that track isn't in the queue",
       },
     },
-    ERROR_EMOJI,
+    CadeEmoji.ERROR,
   ),
 
   success: withPrefix(
@@ -181,7 +186,7 @@ export const messages = {
         playlistSkipped: "playlist skipped",
       },
     },
-    SUCCESS_EMOJI,
+    CadeEmoji.ERROR,
   ),
 
   processing: withPrefix(
@@ -193,22 +198,23 @@ export const messages = {
       caption: "adding caption...",
       uncaption: "removing caption...",
     },
-    PROCESSING_EMOJI,
+    CadeEmoji.PROCESSING,
   ),
 
   media: {
     get: {
-      chooseFormat: `${PROCESSING_EMOJI} whatcha wanna download`,
+      chooseFormat: `${CadeEmoji.PROCESSING} whatcha wanna download`,
 
-      onlyInvoker: `${ERROR_EMOJI} only the person who used .get can use these buttons`,
+      onlyInvoker: `${CadeEmoji.ERROR} only the person who used .get can use these buttons`,
 
-      downloading: (format: "video" | "audio") => `${PROCESSING_EMOJI} downloading ${format}...`,
+      downloading: (format: "video" | "audio") => `${CadeEmoji.PROCESSING} downloading ${format}...`,
     },
   },
 } as const;
 
-export async function reactSuccess(
+export async function reactWithEmoji(
   message: Parameters<CadeCommand["execute"]>[0]["message"],
+  emoji: CadeEmoji
 ): Promise<void> {
-  await message.react(SUCCESS_EMOJI).catch(() => undefined);
+  await message.react(emoji).catch(() => undefined);
 }

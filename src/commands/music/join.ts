@@ -3,7 +3,7 @@ import { PermissionFlagsBits } from "discord.js";
 import { CadeCommand, CommandCategory, type CommandContext } from "../types.js";
 
 import { getOrCreatePlayer } from "../../music/player.js";
-import { messages, reactSuccess } from "../../utils/messages.js";
+import { messages, reactWithEmoji, CadeEmoji } from "../../utils/messages.js";
 
 export class JoinCommand extends CadeCommand {
   name = "join";
@@ -56,7 +56,7 @@ export class JoinCommand extends CadeCommand {
         textChannelId: message.channel.id,
       });
 
-      await reactSuccess(message);
+      await reactWithEmoji(message, CadeEmoji.SUCCESS);
 
       this.sendInfoToLog(`Joined ${voiceChannel.name} in ${guild.name}`);
     } catch (error) {

@@ -14,7 +14,7 @@ import {
   saveQueueSnapshot,
 } from "../../music/queue.js";
 
-import { messages, reactSuccess } from "../../utils/messages.js";
+import { CadeEmoji, messages, reactWithEmoji } from "../../utils/messages.js";
 
 export class SkipCommand extends CadeCommand {
   name = "skip";
@@ -53,7 +53,7 @@ export class SkipCommand extends CadeCommand {
       await player.setRepeatMode("off");
       await player.skip(0, false);
 
-      await reactSuccess(message);
+      await reactWithEmoji(message, CadeEmoji.SUCCESS);
       return;
     }
 
@@ -76,7 +76,7 @@ export class SkipCommand extends CadeCommand {
       }
 
       await prepareShuffledNextTrack(player);
-      await reactSuccess(message);
+      await reactWithEmoji(message, CadeEmoji.SUCCESS);
       return;
     }
 
@@ -109,7 +109,7 @@ export class SkipCommand extends CadeCommand {
         await player.setRepeatMode("off");
         await player.skip(index, false);
 
-        await reactSuccess(message);
+        await reactWithEmoji(message, CadeEmoji.SUCCESS);
         return;
       }
 
@@ -154,7 +154,7 @@ export class SkipCommand extends CadeCommand {
         await player.setRepeatMode("off");
         await player.skip(0, false);
 
-        await reactSuccess(message);
+        await reactWithEmoji(message, CadeEmoji.SUCCESS);
         return;
       }
 
@@ -183,7 +183,7 @@ export class SkipCommand extends CadeCommand {
       await player.setRepeatMode("off");
       await player.skip(0, false);
 
-      await reactSuccess(message);
+      await reactWithEmoji(message, CadeEmoji.SUCCESS);
       return;
     }
 

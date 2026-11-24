@@ -6,7 +6,7 @@ import {
   isSameVoiceChannel,
   destroyPlayer,
 } from "../../music/player.js";
-import { messages, reactSuccess } from "../../utils/messages.js";
+import { messages, reactWithEmoji, CadeEmoji } from "../../utils/messages.js";
 
 export class DisconnectCommand extends CadeCommand {
   name = "disconnect";
@@ -36,7 +36,7 @@ export class DisconnectCommand extends CadeCommand {
     try {
       await destroyPlayer(client, guild.id, "Disconnected by user");
 
-      await reactSuccess(message);
+      await reactWithEmoji(message, CadeEmoji.SUCCESS);
 
       this.sendInfoToLog(`Disconnected from ${guild.name}`);
     } catch (error) {

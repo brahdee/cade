@@ -3,6 +3,7 @@ import type { Message } from "discord.js";
 import type { CadeClient } from "../bot/cade.js";
 
 import { incrementCommandCount } from "../database/stats.js";
+import { CadeEmoji, reactWithEmoji } from "../utils/messages.js";
 
 export async function handleMessageCreate(
   client: CadeClient,
@@ -19,6 +20,20 @@ export async function handleMessageCreate(
       content = message.content.slice(prefix.length).trim();
     } else {
       if (!client.user) return;
+
+      switch (message.content.toLowerCase()) {
+        case "i love you cade":
+          await reactWithEmoji(message, CadeEmoji.HAPPY)
+          break;
+        case "i hate you cade":
+          await reactWithEmoji(message, CadeEmoji.ANGRY)
+          break;
+        case "i mold you cade":
+          await reactWithEmoji(message, CadeEmoji.MOLDY)
+          break;
+        default:
+          break;
+      }
 
       const mention = new RegExp(`^<@!?${client.user.id}>\\s*`);
 
