@@ -5,7 +5,7 @@ import { downloadYouTube, validateYouTubeUrl } from "../../../media/youtube.js";
 const MAX_BODY_SIZE = 2 ** 12;
 const MAX_REQUESTS = 8;
 const RATE_WINDOW = 10 * 60 * 1000;
-const MAX_CONCURRENT_DOWNLOADS = 1;
+const MAX_CONCURRENT_DOWNLOADS = 5;
 
 const MAX_WEB_FILE_SIZE_MB = Number(
   process.env.CADE_WEB_MAX_FILE_SIZE_MB ?? 250,
@@ -41,6 +41,11 @@ function jsonError(status: number, error: string): Response {
   });
 }
 
+interface YtDownloadReq {
+  url: string,
+  kind: "video" | "audio"
+}
+
 function checkRateLimit(address: string): boolean {
   const now = Date.now();
 
@@ -70,7 +75,7 @@ function checkRateLimit(address: string): boolean {
   return true;
 }
 
-async function readJson(request: Request): Promise<unknown> {
+async function readJson(request: Request): Promise<YtDownloadReq> {
   if (
     !request.headers
       .get("content-type")
@@ -112,7 +117,7 @@ async function readJson(request: Request): Promise<unknown> {
   }
 
   try {
-    return JSON.parse(body) as unknown;
+    return JSON.parse(body) as YtDownloadReq;
   } catch {
     throw new ApiError(400, "Invalid JSON.");
   }
@@ -135,7 +140,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return jsonError(503, "The downloader is currently busy.");
   }
 
-  let body: unknown;
+  let body: YtDownloadReq;
 
   try {
     body = await readJson(request);
@@ -152,9 +157,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     body === null ||
     !("url" in body) ||
     typeof body.url !== "string" ||
+    !("kind" in body) ||
+    typeof body.kind !== "string" ||
     body.url.length > 2048
   ) {
-    return jsonError(400, "Please provide a YouTube URL.");
+    return jsonError(400, "Please provide a YouTube URL and download kind.");
+  }
+
+  if (body.kind !== "audio" && body.kind !== "video") {
+    return jsonError(400, "Invalid download kind.");
   }
 
   let url: string;
@@ -168,7 +179,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   activeDownloads++;
 
   try {
-    const result = await downloadYouTube(url, "audio", undefined, {
+    const result = await downloadYouTube(url, body.kind, undefined, {
       maxFileSize: MAX_WEB_FILE_SIZE,
     });
 
@@ -177,9 +188,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return new Response(file, {
       status: 200,
       headers: {
-        "Content-Type": "audio/mpeg",
+        "Content-Type": body.kind === "audio" ? "audio/mpeg" : "video/mp4",
         "Content-Length": String(file.byteLength),
-        "Content-Disposition": 'attachment; filename="cade-download.mp3"',
+        "Content-Disposition": `attachment; filename=${result.filename}`,
         "Cache-Control": "no-store",
         "X-Content-Type-Options": "nosniff",
       },
