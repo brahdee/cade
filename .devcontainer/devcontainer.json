@@ -15,7 +15,9 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "ms-azuretools.vscode-docker",
-        "TypeScriptTeam.native-preview"
+        "TypeScriptTeam.native-preview",
+        "svelte.svelte-vscode",
+        "vivaxy.vscode-conventional-commits"
       ],
       "settings": {
         "js/ts.experimental.useTsgo": true,
