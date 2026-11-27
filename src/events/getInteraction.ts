@@ -3,16 +3,16 @@ import { MessageFlags, type ButtonInteraction } from "discord.js";
 import { claimGetRequest } from "../media/getRequests.js";
 
 import {
-  downloadYouTube,
-  type YouTubeDownloadFormat,
-} from "../media/youtube.js";
+  downloadMedia,
+  type YTDLFormat,
+} from "../media/ytdlp.js";
 
 import { messages } from "../utils/messages.js";
 
 export async function handleGetInteraction(
   interaction: ButtonInteraction,
   requestId: string,
-  format: YouTubeDownloadFormat,
+  format: YTDLFormat,
 ): Promise<void> {
   const result = claimGetRequest(requestId, interaction.user.id);
 
@@ -40,7 +40,7 @@ export async function handleGetInteraction(
   });
 
   try {
-    const download = await downloadYouTube(
+    const download = await downloadMedia(
       result.request.url,
       format,
       result.request.range,

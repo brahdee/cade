@@ -10,7 +10,7 @@ import {
 } from "../commands/misc/help.js";
 
 import { handleGetInteraction } from "./getInteraction.js";
-import type { YouTubeDownloadFormat } from "../media/youtube.js";
+import type { YTDLFormat } from "../media/ytdlp.js";
 
 export async function handleInteractionCreate(
   client: CadeClient,
@@ -28,7 +28,7 @@ export async function handleInteractionCreate(
     await handleGetInteraction(
       interaction,
       requestId!,
-      format as YouTubeDownloadFormat,
+      format as YTDLFormat,
     );
 
     return;

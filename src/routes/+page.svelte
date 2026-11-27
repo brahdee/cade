@@ -165,7 +165,7 @@
 </svelte:head>
 
 <div id="container">
-    <img src="https://i.imgur.com/0DzCGlE.gif" alt="cade youtube downloader" width="700px">
+    <img src="https://i.imgur.com/ZPqgOSb.gif" alt="cade downloader" width="700px">
     <div id="cade-block">
         <button type="button" onclick={tapCade}>
             <img id="cade" src={cadePic} alt="cade" bind:this={cade}>
@@ -177,7 +177,7 @@
     <form onsubmit={download}>
         <input
             type="url"
-            placeholder="youtube url goes here"
+            placeholder="media url goes here"
             bind:value={url}
             required
         />
@@ -191,4 +191,5 @@
             </button>
         </div>
     </form>
+    <p id="supported-sites"><span>supported sites:</span> youtube, twitter/x, instagram, tiktok</p>
 </div>

@@ -1,6 +1,6 @@
 import type { RequestHandler } from "./$types";
 
-import { downloadYouTube, validateYouTubeUrl } from "../../../media/youtube.js";
+import { downloadMedia, validateMediaUrl } from "../../../media/ytdlp.js";
 
 const MAX_BODY_SIZE = 2 ** 12;
 const MAX_REQUESTS = 8;
@@ -171,7 +171,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   let url: string;
 
   try {
-    url = validateYouTubeUrl(body.url);
+    url = validateMediaUrl(body.url);
   } catch {
     return jsonError(400, "Invalid YouTube URL.");
   }
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   activeDownloads++;
 
   try {
-    const result = await downloadYouTube(url, body.kind, undefined, {
+    const result = await downloadMedia(url, body.kind, undefined, {
       maxFileSize: MAX_WEB_FILE_SIZE,
     });
 

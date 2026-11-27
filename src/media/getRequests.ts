@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 
-import type { YouTubeTimeRange } from "./youtube.js";
+import type { YTDLTimeRange } from "./ytdlp.js";
 
 export interface PendingGetRequest {
   userId: string;
   url: string;
-  range?: YouTubeTimeRange;
+  range?: YTDLTimeRange;
 }
 
 interface StoredRequest {

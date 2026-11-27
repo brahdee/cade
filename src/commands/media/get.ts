@@ -3,9 +3,9 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { CadeCommand, CommandCategory, type CommandContext } from "../types.js";
 
 import {
-  validateYouTubeUrl,
-  type YouTubeTimeRange,
-} from "../../media/youtube.js";
+  validateMediaUrl,
+  type YTDLTimeRange,
+} from "../../media/ytdlp.js";
 
 import { createGetRequest, cancelGetRequest } from "../../media/getRequests.js";
 
@@ -75,13 +75,13 @@ export class GetCommand extends CadeCommand {
     let url: string;
 
     try {
-      url = validateYouTubeUrl(rawUrl.replace(/^<(.+)>$/, "$1"));
+      url = validateMediaUrl(rawUrl.replace(/^<(.+)>$/, "$1"));
     } catch {
       await message.reply(messages.errors.get.invalidUrl);
       return;
     }
 
-    let range: YouTubeTimeRange | undefined;
+    let range: YTDLTimeRange | undefined;
 
     if (args.length === 3) {
       const start = parseTimestamp(args[1]!);

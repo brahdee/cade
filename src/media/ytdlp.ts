@@ -4,41 +4,49 @@ import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, extname, join, resolve } from "node:path";
 
-export type YouTubeDownloadFormat = "video" | "audio";
+export type YTDLFormat = "video" | "audio";
 
-export interface YouTubeDownloadOptions {
+export interface YTDLOptions {
   maxFileSize?: number;
 }
 
-export interface YouTubeTimeRange {
+export interface YTDLTimeRange {
   start: number;
   end: number;
 }
 
-export interface YouTubeDownload {
+export interface YTDLResult {
   buffer: Buffer;
   filename: string;
-  format: YouTubeDownloadFormat;
+  format: YTDLFormat;
 }
 
 const DEFAULT_MAX_FILE_SIZE = 25 * 1024 * 1024;
 const DOWNLOAD_TIMEOUT = 10 * 60 * 1000;
 
-const ALLOWED_HOSTS = new Set([
+const ALLOWED_MEDIA_HOSTS = new Set([
   "youtube.com",
   "www.youtube.com",
   "m.youtube.com",
   "music.youtube.com",
   "youtu.be",
+  "x.com",
+  "www.x.com",
+  "instagram.com",
+  "www.instagram.com",
+  "twitter.com",
+  "www.twitter.com",
+  "tiktok.com",
+  "www.tiktok.com"
 ]);
 
-export function validateYouTubeUrl(input: string): string {
+export function validateMediaUrl(input: string): string {
   let url: URL;
 
   try {
     url = new URL(input);
   } catch {
-    throw new Error("Invalid YouTube URL.");
+    throw new Error("Invalid media URL.");
   }
 
   if (
@@ -46,9 +54,9 @@ export function validateYouTubeUrl(input: string): string {
     url.port ||
     url.username ||
     url.password ||
-    !ALLOWED_HOSTS.has(url.hostname.toLowerCase())
+    !ALLOWED_MEDIA_HOSTS.has(url.hostname.toLowerCase())
   ) {
-    throw new Error("Please provide a valid YouTube URL.");
+    throw new Error("Please provide a valid media URL.");
   }
 
   return url.toString();
@@ -118,7 +126,7 @@ function executeYtDlp(args: string[]): Promise<string> {
       if (code !== 0) {
         console.error("[yt-dlp]", stderr);
 
-        reject(new Error("yt-dlp failed to download the video."));
+        reject(new Error("yt-dlp failed to download the requested media."));
 
         return;
       }
@@ -128,13 +136,13 @@ function executeYtDlp(args: string[]): Promise<string> {
   });
 }
 
-export async function downloadYouTube(
+export async function downloadMedia(
   input: string,
-  format: YouTubeDownloadFormat,
-  range?: YouTubeTimeRange,
-  options: YouTubeDownloadOptions = {},
-): Promise<YouTubeDownload> {
-  const url = validateYouTubeUrl(input);
+  format: YTDLFormat,
+  range?: YTDLTimeRange,
+  options: YTDLOptions = {},
+): Promise<YTDLResult> {
+  const url = validateMediaUrl(input);
 
   const maxFileSize = options.maxFileSize ?? DEFAULT_MAX_FILE_SIZE;
 
@@ -152,7 +160,7 @@ export async function downloadYouTube(
     throw new Error("Invalid video time range.");
   }
 
-  const directory = await mkdtemp(join(tmpdir(), "cade-youtube-"));
+  const directory = await mkdtemp(join(tmpdir(), "cade-ytdl-"));
 
   try {
     const outputTemplate = join(directory, "%(title)s.%(ext)s");
@@ -163,6 +171,7 @@ export async function downloadYouTube(
       "--no-warnings",
       "--no-progress",
       "--no-simulate",
+      "--restrict-filenames",
       "--max-filesize",
       `${Math.max(1, Math.floor(maxFileSize / (1024 * 1024)))}M`,
       "--output",
@@ -174,7 +183,7 @@ export async function downloadYouTube(
     if (format === "video") {
       args.push(
         "--format",
-        "bv*+ba/b",
+        url.startsWith("y") ? "bv*+ba/b" : "v[ext=mp4]+ba[ext=m4a]/b[ext=mp4]",  // assume link is yt if starts with y
         "--merge-output-format",
         "mp4",
         "--remux-video",
